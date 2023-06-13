@@ -1,9 +1,16 @@
 "use client";
-import {useEffect, useState} from "react";
-import {SearchContainer} from "./search_container.js";
+
+import { useEffect, useState, useContext } from "react";
+import { SearchContainer } from "./search_container.js";
+import { AuthContext } from "../context/auth_context.js";
+import { useRouter } from 'next/navigation';
+import { getCurrentUser } from "../api/auth.js";
 
 export default function Home() {
-  const [message, setMessage] = useState("");
+  const [ message, setMessage ] = useState("");
+  const { isLoggedIn, currentUser, setIsLoggedIn, setCurrentUser } = useContext(AuthContext);
+  const router = useRouter();
+
   const url = "http://localhost:3000/firms/search?sales_lower_limit=99000000&sales_upper_limit=2000000"
 
   const code = 'code=123&'
@@ -45,26 +52,50 @@ export default function Home() {
           console.error(error);
       }
   };
+
+  const handleGetCurrentUser = async () => {
+    try {
+      const res = await getCurrentUser();
+
+      if (res?.data.isLogin === true) {
+        setIsLoggedIn(true);
+        setCurrentUser(res?.data.data);
+        console.log(res?.data.data);
+      } else {
+        router.push('/sign_in')
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
-      // getMessage();
+    handleGetCurrentUser();
   }, []);
 
   const onSubmit = (formData) => {
     console.log(formData)
     setSubmitedData(formData)
   }
+
+  console.log(isLoggedIn)
  
   return (
       <main>
-          <div className={"text-9xl"}>
-              {message}
-          </div>
-          <div>
-            ホンジャマカ:{submitedData.firmName}
-          </div>
-          <SearchContainer
-            onSubmit={onSubmit}
-          />
+        {isLoggedIn &&
+          <>
+            <div className={"text-9xl"}>
+                {message}
+            </div>
+            <div>
+              ホンジャマカ:{submitedData.firmName}
+            </div>
+            <SearchContainer
+              onSubmit={onSubmit}
+            />
+          </>
+        }
+          
       </main>
   )
 }
