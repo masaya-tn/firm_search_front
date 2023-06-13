@@ -1,0 +1,75 @@
+"use client";
+
+import Cookies from "js-cookie";
+import { createContext, useContext, useState, useEffect } from "react";
+import { signIn } from "../api/auth";
+import { AuthContext } from '../context/auth_context';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+
+export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { setIsLoggedIn, setCurrentUser } = useContext(AuthContext);
+  const router = useRouter()
+
+  const generateParams = () => {
+    const signInParams = {
+      email: email,
+      password: password,
+    };
+    return signInParams;
+  };
+
+  const handleSignInSubmit = async (e) => {
+    e.preventDefault();
+    const params = generateParams();
+
+    try {
+      const res = await signIn(params);
+      if (res.status === 200) {
+        Cookies.set("_access_token", res.headers["access-token"]);
+        Cookies.set("_client", res.headers["client"]);
+        Cookies.set("_uid", res.headers["uid"]);
+
+        setIsLoggedIn(true);
+        setCurrentUser(res.data.data);
+
+        router.push("/firms");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+  return (
+    <>
+      <p>サインインページです</p>
+      <form>
+        <div>
+          <label htmlFor="email">メールアドレス</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div>
+          <label htmlFor="password">パスワード</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <button type="submit" onClick={(e) => handleSignInSubmit(e)}>
+          Submit
+        </button>
+      </form>
+      <Link href="/sign_up">サインアップへ</Link>
+    </>
+  );
+};
