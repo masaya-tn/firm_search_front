@@ -5,35 +5,40 @@ import { SearchContainer } from "./search_container.js";
 import { AuthContext } from "../context/auth_context.js";
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from "../api/auth.js";
+import { FirmList } from "./firm_list.js";
 
 export default function Home() {
-  const [ message, setMessage ] = useState("");
+  const [firms, setFirms] = useState()
   const { isLoggedIn, currentUser, setIsLoggedIn, setCurrentUser } = useContext(AuthContext);
   const router = useRouter();
-
-  const url = "http://localhost:3000/firms/search?sales_lower_limit=99000000&sales_upper_limit=2000000"
-
-  const code = 'code=123&'
-  const status = "status=2&"
-  const firm_name = "firm_name=株式会社&"
-  const firm_name_kana = "firm_name_kana=カブシキガイシャ&"
-  const post_code = "post_code=1234443&"
-  const address = "address=大阪府堺市&"
-  const representive = "representive=社長さん&"
-  const representive_kana = "representive_kana=シャチョウサン&"
-  const phone_number = "09087654321"
-
-  const query = code+status+firm_name+firm_name_kana+post_code+address+representive+representive_kana+phone_number
-
   const [submitedData, setSubmitedData] = useState({
-    firmName: '',
-    status: '',
-    address: '',
-  })
+      firmName: '',
+      status: '',
+      address: '',
+      salesMin: '',
+      salesMax: '',
+      profitsMin: '',
+      profitsMax: '',
+      searchPattern: "and"
+    })
+  const url = "http://localhost:3000/firms/search?"
 
-  const getMessage = async () => {
+  const setQuery = (formData) => {
+    const firmName = `firm_name=${formData.firmName}&`
+    const status = `status=${formData.status}&`
+    const address = `address=${formData.address}&`
+    const salesMin = `salesMin=${formData.salesMin}&`
+    const salesMax = `salesMax=${formData.salesMax}&`
+    const profitsMin = `profitsMin=${formData.profitsMin}&`
+    const profitsMax = `profitsMax=${formData.profitsMax}&`
+    const searchPattern = `searchPattern=${formData.searchPattern}`
+    const query = firmName+status+address+salesMin+salesMax+profitsMin+profitsMax+searchPattern
+    return(query)
+  }
+
+  const fetchFirms = async (query) => {
       try {
-          const response = await fetch(url, {
+          const response = await fetch(url+query, {
               method: 'GET',
               headers: {
                   'Content-Type': 'application/json',
@@ -42,8 +47,7 @@ export default function Home() {
 
           if (response.ok) {
               const data = await response.json();
-              setMessage(data.data.message);
-              console.log(data.data.message);
+              setFirms(data.firms)
           } else {
               const errorResponse = await response.json();
               console.error('Error:', errorResponse);
@@ -73,26 +77,23 @@ export default function Home() {
     handleGetCurrentUser();
   }, []);
 
-  const onSubmit = (formData) => {
-    console.log(formData)
-    setSubmitedData(formData)
+  const handleSubmit = (formData) => {
+    const query = setQuery(formData)
+    fetchFirms(query)
   }
 
-  console.log(isLoggedIn)
- 
   return (
       <main>
         {isLoggedIn &&
           <>
-            <div className={"text-9xl"}>
-                {message}
-            </div>
-            <div>
-              ホンジャマカ:{submitedData.firmName}
-            </div>
             <SearchContainer
-              onSubmit={onSubmit}
+              handleSubmit={handleSubmit}
             />
+            {firms &&
+              <FirmList
+                firms={firms}
+              />
+            }
           </>
         }
           
