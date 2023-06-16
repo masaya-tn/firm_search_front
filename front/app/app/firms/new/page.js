@@ -1,57 +1,30 @@
 "use client"
 
 import { useEffect, useState } from "react";
-import client from "../../../api/client"
-import Link from "next/link";
+import client from "../../api/client"
 
-export default function editFirmData({ params }) {
-  const url = `http://localhost:3000/firms/${params.id}`
-  const [firmData, setFirmData] = useState();
-  const [salesData, setSalesData] = useState();
-  const [profitsData, setProfitsData] = useState();
-  const [isDataSet, setIsDataSet] = useState(false);
-  
-  const fetchFirm = async () => {
-    try {
-            
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            setFirmData(data.firm)
-            setSalesData(arrangeSalesData(data.performance))
-            setProfitsData(arrangeProfitsData(data.performance))
-            setIsDataSet(true)
-            console.log(arrangeProfitsData(data.performance))
-        } else {
-            const errorResponse = await response.json();
-        }
-    } catch (error) {
-        console.error(error);
-    }
-  }
-
-  const arrangeSalesData = (performanceData) => {
-
-    let newData = {}
-    Object.keys(performanceData).map(function(key){
-      newData[`${performanceData[key].year}`] = performanceData[key].sales
-    })
-    return(newData)
-  }
-
-  const arrangeProfitsData = (performanceData) => {
-    let newData = {}
-    Object.keys(performanceData).map(function(key){
-      newData[`${performanceData[key].year}`] = performanceData[key].profits
-    })
-    return(newData)
-  }
+export default function newFirmData() {
+  const [firmData, setFirmData] = useState({
+    code: '',
+    firm_name: '',
+    firm_name_kana: '',
+    status: 0,
+    post_code: '',
+    address: '',
+    representive: '',
+    representive_kana: '',
+    phone_number: '',
+  });
+  const [salesData, setSalesData] = useState({
+    "2022": 0,
+    "2021": 0,
+    "2020": 0
+  });
+  const [profitsData, setProfitsData] = useState({
+    "2022": 0,
+    "2021": 0,
+    "2020": 0
+  });
 
   const onChangeFirm = (e) => {
     setFirmData({...firmData, [e.target.name]: e.target.value})
@@ -68,24 +41,19 @@ export default function editFirmData({ params }) {
   const onSubmit = async (e) => {
     e.preventDefault();
     try { 
-      const res = await client.put(`/firms/${params.id}`, {
+      const res = await client.post("/firms", {
         firm: firmData,
         sales: salesData,
         profits: profitsData
-    });
+      });
       console.log(res)
     } catch (error) {
         console.error(error);
     }
   }
 
-  useEffect(() => {
-    fetchFirm()
-  }, []);
-
   return(
     <>
-      {isDataSet &&
         <form onSubmit={onSubmit}>
           <label>企業コード：</label>
           <input
@@ -194,7 +162,7 @@ export default function editFirmData({ params }) {
           <br/>
           <button type="submit">更新</button>
         </form>
-      }
+      
      
     </>
   )

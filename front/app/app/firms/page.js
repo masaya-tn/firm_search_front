@@ -6,6 +6,7 @@ import { AuthContext } from "../context/auth_context.js";
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from "../api/auth.js";
 import { FirmList } from "./firm_list.js";
+import Link from "next/link";
 
 export default function Home() {
   const [firms, setFirms] = useState()
@@ -94,7 +95,7 @@ export default function Home() {
                 firms={firms}
               />
             }
-            
+            <Link href="/firms/new">企業データ追加</Link>
           </>
         }
           
