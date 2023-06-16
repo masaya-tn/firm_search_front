@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import client from "../../api/client"
+import { useRouter } from 'next/navigation';
 
 export default function firmDefault({ params }) {
   const url = `http://localhost:3000/firms/${params.id}`
   const [firmData, setFirmData] = useState();
+  const router = useRouter();
 
   const fetchFirm = async () => {
     try {
@@ -38,6 +41,19 @@ export default function firmDefault({ params }) {
     }
   }
 
+  const onClickDelete = async () => {
+    console.log('来てます')
+    try {
+      const res = await client.delete(`/firms/${params.id}`)
+      if(res.status == 200) {
+        router.push('/firms')
+      }
+    } catch(error) {
+      console.log(error)
+    }
+    
+  }
+
   useEffect(() => {
     fetchFirm()
   }, []);
@@ -63,7 +79,7 @@ export default function firmDefault({ params }) {
               <p>{p.profits}円</p>
             </>
           ))}
-          <button>削除</button>
+          <button type="button" onClick={onClickDelete}>削除</button>
           <Link href={`firms/${params.id}/edit`}>編集</Link>
         </>
       }
