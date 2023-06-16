@@ -37,8 +37,8 @@ export function SearchContainer({handleSubmit}) {
         <label>上場状況:</label>
         <select name="status" onChange={handleChange}>
           <option value="">未選択</option>
-          <option value="1">上場</option>
-          <option value="2">未上場</option>
+          <option value="1">未上場</option>
+          <option value="2">上場</option>
         </select>
         <br />
         <label>都道府県:</label>
