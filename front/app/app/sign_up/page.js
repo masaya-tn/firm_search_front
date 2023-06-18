@@ -9,7 +9,7 @@ import Link from 'next/link'
 export default function SignUp() {
   // const { setIsSignedIn, setCurrentUser } = useContext(AuthContext);
   const router = useRouter()
-
+  const [name, setName] = useState("")
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -18,6 +18,7 @@ export default function SignUp() {
 
   const generateParams = () => {
     const signUpParams = {
+      name: name,
       email: email,
       password: password,
       passwordConfirmation: passwordConfirmation,
@@ -42,6 +43,16 @@ export default function SignUp() {
     <>
       <h1>サインアップページです</h1>
       <form>
+      <div>
+          <label htmlFor="name">名前</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
         <div>
           <label htmlFor="email">メールアドレス</label>
           <input
