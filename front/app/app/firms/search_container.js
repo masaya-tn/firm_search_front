@@ -9,12 +9,11 @@ export function SearchContainer({handleSubmit}) {
     salesMax: '',
     profitsMin: '',
     profitsMax: '',
-    searchPattern: "and"
+    searchPattern: ""
   });
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value})
-    console.log(formData)
   };
 
   const onSubmit = (e) => {
@@ -125,6 +124,7 @@ export function SearchContainer({handleSubmit}) {
         <br />
         <label>検索条件:</label>
         <select name="searchPattern" onChange={handleChange}>
+          <option value="">未選択</option>
           <option value="or">OR検索</option>
           <option value="and">AND検索</option>
         </select>

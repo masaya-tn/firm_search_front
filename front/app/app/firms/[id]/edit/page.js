@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import client from "../../../api/client"
 import Link from "next/link";
+import Cookies from "js-cookie";
+import { useRouter } from 'next/navigation';
 
 export default function editFirmData({ params }) {
   const url = `http://localhost:3000/firms/${params.id}`
@@ -10,6 +12,7 @@ export default function editFirmData({ params }) {
   const [salesData, setSalesData] = useState();
   const [profitsData, setProfitsData] = useState();
   const [isDataSet, setIsDataSet] = useState(false);
+  const router = useRouter()
   
   const fetchFirm = async () => {
     try {
@@ -17,7 +20,10 @@ export default function editFirmData({ params }) {
         const response = await fetch(url, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
+              "access-token": Cookies.get("_access_token"),
+              client: Cookies.get("_client"),
+              uid: Cookies.get("_uid"),
+              'Content-Type': 'application/json',
             },
         });
 
@@ -27,9 +33,9 @@ export default function editFirmData({ params }) {
             setSalesData(arrangeSalesData(data.performance))
             setProfitsData(arrangeProfitsData(data.performance))
             setIsDataSet(true)
-            console.log(arrangeProfitsData(data.performance))
         } else {
             const errorResponse = await response.json();
+            console.error('Error:', errorResponse);
         }
     } catch (error) {
         console.error(error);
@@ -68,12 +74,23 @@ export default function editFirmData({ params }) {
   const onSubmit = async (e) => {
     e.preventDefault();
     try { 
-      const res = await client.put(`/firms/${params.id}`, {
-        firm: firmData,
+      const res = await client.put(`/firms/${params.id}`, 
+      {firm: firmData,
         sales: salesData,
         profits: profitsData
-    });
-      console.log(res)
+      }, 
+      {
+        headers: {
+          "access-token": Cookies.get("_access_token"),
+          client: Cookies.get("_client"),
+          uid: Cookies.get("_uid"),
+          'Content-Type': 'application/json',
+        },
+      });
+      if(res.status == 200){
+        router.push(`/firms/${params.id}`)
+      }
+      console.log(res);
     } catch (error) {
         console.error(error);
     }
@@ -86,6 +103,8 @@ export default function editFirmData({ params }) {
   return(
     <>
       {isDataSet &&
+        <>
+        <Link href="firms">企業検索画面へ</Link>
         <form onSubmit={onSubmit}>
           <label>企業コード：</label>
           <input
@@ -194,6 +213,8 @@ export default function editFirmData({ params }) {
           <br/>
           <button type="submit">更新</button>
         </form>
+        </>
+        
       }
      
     </>

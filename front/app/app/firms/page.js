@@ -7,10 +7,13 @@ import { useRouter } from 'next/navigation';
 import { getCurrentUser } from "../api/auth.js";
 import { FirmList } from "./firm_list.js";
 import Link from "next/link";
+import { isCurrentUserAdmin } from "../api/auth.js";
+import { signOut } from "../api/auth.js";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const [firms, setFirms] = useState()
-  const { isLoggedIn, currentUser, setIsLoggedIn, setCurrentUser } = useContext(AuthContext);
+  const { currentUser, setCurrentUser } = useContext(AuthContext);
   const router = useRouter();
   const [submitedData, setSubmitedData] = useState({
       firmName: '',
@@ -25,7 +28,7 @@ export default function Home() {
   const url = "http://localhost:3000/firms/search?"
 
   const setQuery = (formData) => {
-    const firmName = `firm_name=${formData.firmName}&`
+    const firmName = `firmName=${formData.firmName}&`
     const status = `status=${formData.status}&`
     const address = `address=${formData.address}&`
     const salesMin = `salesMin=${formData.salesMin}&`
@@ -42,7 +45,10 @@ export default function Home() {
           const response = await fetch(url+query, {
               method: 'GET',
               headers: {
-                  'Content-Type': 'application/json',
+                "access-token": Cookies.get("_access_token"),
+                client: Cookies.get("_client"),
+                uid: Cookies.get("_uid"),
+                'Content-Type': 'application/json',
               },
           });
 
@@ -63,9 +69,7 @@ export default function Home() {
       const res = await getCurrentUser();
 
       if (res?.data.isLogin === true) {
-        setIsLoggedIn(true);
         setCurrentUser(res?.data.data);
-        console.log(res?.data.data);
       } else {
         router.push('/sign_in')
       }
@@ -83,10 +87,17 @@ export default function Home() {
     fetchFirms(query)
   }
 
+  const onClickSignOut = () => {
+    signOut()
+    router.push('/sign_in')
+  }
+
   return (
       <main>
-        {isLoggedIn &&
+        {currentUser &&
           <>
+            <Link href="/users">メンバー管理画面へ</Link>
+            <button button="button" onClick={onClickSignOut}>サインアウト</button>
             <SearchContainer
               handleSubmit={handleSubmit}
             />
@@ -95,7 +106,9 @@ export default function Home() {
                 firms={firms}
               />
             }
-            <Link href="/firms/new">企業データ追加</Link>
+            {currentUser.admin &&
+              <Link href="/firms/new">企業データ追加</Link>
+            }
           </>
         }
           

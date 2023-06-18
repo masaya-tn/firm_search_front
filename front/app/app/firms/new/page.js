@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import client from "../../api/client"
+import Cookies from "js-cookie";
+import Link from "next/link";
 
 export default function newFirmData() {
   const [firmData, setFirmData] = useState({
@@ -41,10 +43,18 @@ export default function newFirmData() {
   const onSubmit = async (e) => {
     e.preventDefault();
     try { 
-      const res = await client.post("/firms", {
-        firm: firmData,
+      const res = await client.post("/firms",
+      {firm: firmData,
         sales: salesData,
         profits: profitsData
+      } ,
+      {
+        headers: {
+          "access-token": Cookies.get("_access_token"),
+          client: Cookies.get("_client"),
+          uid: Cookies.get("_uid"),
+          'Content-Type': 'application/json',
+        },
       });
       console.log(res)
     } catch (error) {
@@ -54,6 +64,7 @@ export default function newFirmData() {
 
   return(
     <>
+      <Link href="firms">企業検索画面へ</Link>
         <form onSubmit={onSubmit}>
           <label>企業コード：</label>
           <input
