@@ -6,8 +6,8 @@ import Cookies from "js-cookie";
 import Link from 'next/link'; 
 import { useRouter } from 'next/navigation';
 
-export default function editUser({ params }) {
-  const url = `http://localhost:3000/users/${params.id}`
+export default function EditUser({ params }) {
+  const url = `https://firm-search-api-49e394da150b.herokuapp.com/users/${params.id}`
   const [user, setUser] = useState();
   const router = useRouter();
 
@@ -66,7 +66,8 @@ export default function editUser({ params }) {
     <>
     {user &&
       <>
-        <Link href="/users">メンバー一覧画面へ</Link>
+        <Link href="/users" className="link">メンバー一覧画面へ</Link>
+        <h1>メンバー情報編集</h1>
         <form onSubmit={onSubmit}>
           <label>名前：</label>
           <input

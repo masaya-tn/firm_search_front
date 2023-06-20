@@ -23,7 +23,7 @@ export function SearchContainer({handleSubmit}) {
 
   return(
     <>
-      <h1>検索欄</h1>
+      <h1>企業検索</h1>
       <form onSubmit={onSubmit}>
         <label>企業名:</label>
         <input
@@ -128,6 +128,7 @@ export function SearchContainer({handleSubmit}) {
           <option value="or">OR検索</option>
           <option value="and">AND検索</option>
         </select>
+        <br />
         <button type="submit">検索</button>
       </form>
       

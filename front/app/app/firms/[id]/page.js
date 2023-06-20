@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 import Cookies from "js-cookie";
 import { getCurrentUser } from "@/app/api/auth";
 
-export default function firmDefault({ params }) {
-  const url = `http://localhost:3000/firms/${params.id}`
+export default function FirmDetail({ params }) {
+  const url = `https://firm-search-api-49e394da150b.herokuapp.com/firms/${params.id}`
   const [firmData, setFirmData] = useState();
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState();
@@ -87,7 +87,7 @@ export default function firmDefault({ params }) {
     <>
       {firmData &&
         <>
-          <Link href="firms">企業検索画面へ</Link>
+          <Link href="firms" className="link">企業検索画面へ</Link>
           <p>企業コード：{firmData.firm.code}</p>
           <p>企業名：{firmData.firm.firm_name}</p>
           <p>企業名（カナ）：{firmData.firm.firm_name_kana}</p>
@@ -109,7 +109,7 @@ export default function firmDefault({ params }) {
             <>
               <button type="button" onClick={onClickDelete}>削除</button>
               <br/>
-              <Link href={`firms/${params.id}/edit`}>編集</Link>
+              <Link href={`firms/${params.id}/edit`} className="link">編集</Link>
             </>
             
           }

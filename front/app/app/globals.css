@@ -93,6 +93,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  margin-top: 30px;
+  margin-left: 30px;
 }
 
 a {
@@ -100,8 +102,32 @@ a {
   text-decoration: none;
 }
 
+h1 {
+  margin-top: 50px;
+  margin-bottom: 10px;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
 }
+
+button {
+  margin-top: 10px;
+  margin-left: 5px;
+  background-color: rgb(34, 201, 252);
+  height: 30px;
+  width: 130px;
+}
+
+button :hover {
+  background-color: rgb(25, 149, 186);
+}
+
+.link {
+  color: rgb(34, 201, 252);
+  margin-bottom: 50px;
+}
+
+

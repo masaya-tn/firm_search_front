@@ -11,7 +11,7 @@ import { isCurrentUserAdmin } from "../api/auth.js";
 import { signOut } from "../api/auth.js";
 import Cookies from "js-cookie";
 
-export default function Home() {
+export default function FirmSearch() {
   const [firms, setFirms] = useState()
   const { currentUser, setCurrentUser } = useContext(AuthContext);
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function Home() {
       profitsMax: '',
       searchPattern: "and"
     })
-  const url = "http://localhost:3000/firms/search?"
+  const url = "https://firm-search-api-49e394da150b.herokuapp.com/firms/search?"
 
   const setQuery = (formData) => {
     const firmName = `firmName=${formData.firmName}&`
@@ -96,7 +96,7 @@ export default function Home() {
       <main>
         {currentUser &&
           <>
-            <Link href="/users">メンバー管理画面へ</Link>
+            <Link href="/users" className="link header-link">メンバー管理画面へ</Link>
             <button button="button" onClick={onClickSignOut}>サインアウト</button>
             <SearchContainer
               handleSubmit={handleSubmit}
@@ -107,7 +107,7 @@ export default function Home() {
               />
             }
             {currentUser.admin &&
-              <Link href="/firms/new">企業データ追加</Link>
+              <Link href="/firms/new" className="link">企業データ追加</Link>
             }
           </>
         }
