@@ -13,7 +13,7 @@ export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const confirmSuccessUrl = "http://localhost:3000";
+  const confirmSuccessUrl = "https://firm-search-api-49e394da150b.herokuapp.com";
   const AuthContext = createContext();
 
   const generateParams = () => {
@@ -41,7 +41,7 @@ export default function SignUp() {
   };
   return (
     <>
-      <h1>サインアップページです</h1>
+      <h1>サインアップ</h1>
       <form>
       <div>
           <label htmlFor="name">名前</label>
@@ -95,7 +95,7 @@ export default function SignUp() {
           Submit
         </button>
       </form>
-      <Link href="/sign_in">サインインへ</Link>
+      <Link href="/sign_in" className="link">サインインへ</Link>
     </>
   );
 };

@@ -7,7 +7,7 @@ const options = {
 
 const client = applyCaseMiddleware(
     axios.create({
-        baseURL: 'http://localhost:3000',
+        baseURL: 'https://firm-search-api-49e394da150b.herokuapp.com',
     }),
     options
 );

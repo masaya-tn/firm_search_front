@@ -43,7 +43,7 @@ export default function SignIn() {
   };
   return (
     <>
-      <p>サインインページです</p>
+      <p>サインイン</p>
       <form>
         <div>
           <label htmlFor="email">メールアドレス</label>
@@ -69,7 +69,7 @@ export default function SignIn() {
           Submit
         </button>
       </form>
-      <Link href="/sign_up">サインアップへ</Link>
+      <Link href="/sign_up" className="link">サインアップへ</Link>
     </>
   );
 };

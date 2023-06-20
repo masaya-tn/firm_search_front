@@ -8,7 +8,7 @@ import client from "../api/client";
 import { useRouter } from 'next/navigation';
 
 export default function Users() {
-  const url = "http://localhost:3000/users";
+  const url = "https://firm-search-api-49e394da150b.herokuapp.com/users";
   const [users, setUsers] = useState();
   const [currentUser, setCurrentUser] = useState();
   const router = useRouter();
@@ -82,19 +82,20 @@ export default function Users() {
         <>
           {users &&
             <>
-            <Link href="/firms">企業検索画面へ</Link>
+            <Link href="/firms" className="link">企業検索画面へ</Link>
+            <h1>メンバー管理</h1>
             <ul>
               {users.map((user) => (
                 <>
                   <li key={user.id}>
-                    <>名前：{user.name}</>
-                    <>メール：{user.email}</>
+                    <>名前：{user.name}　</>
+                    <>メール：{user.email}　</>
                     {user.admin && 
-                      <>権限：管理者</>
+                      <>権限：管理者　</>
                     }
                     {currentUser.admin &&
                       <>
-                        <Link href={`/users/${user.id}/edit`}>編集</Link>
+                        <Link href={`/users/${user.id}/edit`} className="link">編集</Link>
                         <button type="button" onClick={() => onClickDelete(user.id)}>削除</button>
                       </>
                     }
